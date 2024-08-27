@@ -1,33 +1,33 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from 'next/navigation';
-import { 
-  Box, 
-  Stack, 
-  Button, 
-  TextField, 
-  Typography, 
-  ThemeProvider, 
+import { useRouter } from "next/navigation";
+import {
+  Box,
+  Stack,
+  Button,
+  TextField,
+  Typography,
+  ThemeProvider,
   createTheme,
   CssBaseline,
   Paper,
-  Avatar
+  Avatar,
 } from "@mui/material";
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { keyframes } from '@emotion/react';
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import { keyframes } from "@emotion/react";
 import Image from "next/image";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#eea7f2", 
+      main: "#eea7f2",
     },
     secondary: {
       main: "#a7f2ee",
     },
     accent: {
-      main: "#f2d4a7", 
+      main: "#f2d4a7",
     },
   },
 });
@@ -47,7 +47,8 @@ export default function Home() {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: "Hey there! I'm Proffy, your go-to source for professor info. What faculty member do you want the scoop on today?"
+      content:
+        "Hey there! I'm Proffy, your go-to source for professor info. What faculty member do you want the scoop on today?",
     },
   ]);
   const [message, setMessage] = useState("");
@@ -55,8 +56,8 @@ export default function Home() {
 
   useEffect(() => {
     createBubbles();
-    window.addEventListener('resize', createBubbles);
-    return () => window.removeEventListener('resize', createBubbles);
+    window.addEventListener("resize", createBubbles);
+    return () => window.removeEventListener("resize", createBubbles);
   }, []);
 
   const createBubbles = () => {
@@ -113,33 +114,33 @@ export default function Home() {
   };
 
   const handleClose = () => {
-    router.push('/signin');  
+    router.push("/login");
   };
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      
+
       <Box
         sx={{
-          minHeight: '100vh',
-          width: '100vw',
-          bgcolor: 'primary.main',
-          position: 'relative',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
+          minHeight: "100vh",
+          width: "100vw",
+          bgcolor: "primary.main",
+          position: "relative",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         {bubbles.map((bubble) => (
           <Box
             key={bubble.id}
             sx={{
-              position: 'absolute',
-              borderRadius: '50%',
-              bgcolor: 'rgba(255, 255, 255, 0.3)',
+              position: "absolute",
+              borderRadius: "50%",
+              bgcolor: "rgba(255, 255, 255, 0.3)",
               animation: `${float} ${bubble.animationDuration} infinite ease-in-out`,
               left: bubble.left,
               top: bubble.top,
@@ -151,37 +152,49 @@ export default function Home() {
         <Button
           onClick={handleClose}
           sx={{
-            position: 'absolute',
+            position: "absolute",
             top: 8,
             right: 10,
-            minWidth: 'auto',
+            minWidth: "auto",
             p: 1,
-            color: 'text.secondary',
+            color: "text.secondary",
           }}
         >
-          <ExitToAppIcon sx={{ fontSize: 40 }}/>
+          <ExitToAppIcon sx={{ fontSize: 40 }} />
         </Button>
-        <Paper elevation={5} sx={{ width: "500px", height: "600px", p: 3, borderRadius: 2, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+        <Paper
+          elevation={5}
+          sx={{
+            width: "500px",
+            height: "600px",
+            p: 3,
+            borderRadius: 2,
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+          }}
+        >
           <Box
             sx={{
-              position: 'relative',
-              overflow: 'hidden',
-              borderRadius: '8px',
+              position: "relative",
+              overflow: "hidden",
+              borderRadius: "8px",
               mb: 4,
             }}
           >
-            <Typography 
-              variant="h4" 
-              component="h1" 
-              align="center" 
+            <Typography
+              variant="h4"
+              component="h1"
+              align="center"
               sx={{
-                fontWeight: 'bold',
-                background: 'linear-gradient(45deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)',
-                backgroundClip: 'text',
-                textFillColor: 'transparent',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                position: 'relative',
+                fontWeight: "bold",
+                background:
+                  "linear-gradient(45deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)",
+                backgroundClip: "text",
+                textFillColor: "transparent",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                position: "relative",
                 zIndex: 1,
               }}
             >
@@ -189,12 +202,13 @@ export default function Home() {
             </Typography>
             <Box
               sx={{
-                position: 'absolute',
+                position: "absolute",
                 top: 0,
                 left: 0,
                 right: 0,
                 bottom: 0,
-                background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%)',
+                background:
+                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%)",
                 animation: `${shimmer} 20s infinite`,
                 zIndex: 2,
               }}
@@ -214,12 +228,14 @@ export default function Home() {
                 key={index}
                 direction="row"
                 spacing={1}
-                justifyContent={message.role === "assistant" ? "flex-start" : "flex-end"}
+                justifyContent={
+                  message.role === "assistant" ? "flex-start" : "flex-end"
+                }
                 alignItems="flex-start"
               >
                 {message.role === "assistant" && (
                   <Avatar
-                    sx={{ width: 40, height: 40, bgcolor: 'transparent' }}
+                    sx={{ width: 40, height: 40, bgcolor: "transparent" }}
                   >
                     <Image
                       src="/logo.png"
@@ -230,7 +246,9 @@ export default function Home() {
                   </Avatar>
                 )}
                 <Box
-                  bgcolor={message.role === "user" ? "secondary.main" : "accent.main"}
+                  bgcolor={
+                    message.role === "user" ? "secondary.main" : "accent.main"
+                  }
                   color="text.primary"
                   borderRadius={4}
                   p={2}
@@ -240,10 +258,10 @@ export default function Home() {
                 </Box>
                 {message.role === "user" && (
                   <Avatar
-                    sx={{ width: 40, height: 40, bgcolor: 'transparent' }}
+                    sx={{ width: 40, height: 40, bgcolor: "transparent" }}
                   >
                     <Image
-                      src="/you.png"  
+                      src="/you.png"
                       alt="Edom Belayneh"
                       width={30}
                       height={30}
@@ -261,10 +279,13 @@ export default function Home() {
               onChange={(e) => setMessage(e.target.value)}
               variant="outlined"
             />
-            <Button 
-              variant="contained" 
+            <Button
+              variant="contained"
               onClick={sendMessage}
-              sx={{ bgcolor: 'secondary.main', '&:hover': { bgcolor: 'secondary.dark' } }}
+              sx={{
+                bgcolor: "secondary.main",
+                "&:hover": { bgcolor: "secondary.dark" },
+              }}
             >
               Send
             </Button>
