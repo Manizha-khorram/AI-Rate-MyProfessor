@@ -1,7 +1,7 @@
 "use client";
 
 import LandingPage from "./landing/page";
-import LoginPage from "./signIn/page";
+import LoginPage from "./signin/page";
 import SignupPage from "./signup/page";
 import { usePathname } from "next/navigation";
 
@@ -10,7 +10,7 @@ const Page = () => {
   if (pathname == "/signup") {
     return <LandingPage />;
   }
-  if (pathname == "/signIn") {
+  if (pathname == "/signin") {
     return <LoginPage />;
   }
 
