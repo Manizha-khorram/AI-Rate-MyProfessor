@@ -1,6 +1,6 @@
 "use client";
 
-import SigninPage from "."; // Ensure this path is correct
+import SigninPage from "./signing";
 
 export default function LoginPage() {
   return (
