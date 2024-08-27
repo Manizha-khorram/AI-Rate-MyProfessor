@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebaseConfig';
 import { 
   Box, 
@@ -37,43 +37,47 @@ const float = keyframes`
   50% { transform: translateY(-20px); }
 `;
 
-const SigninPage = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [isEmailSignIn, setIsEmailSignIn] = useState(false);
-    const [showTip, setShowTip] = useState(false);
-    const [bubbles, setBubbles] = useState([]);
-    const router = useRouter();
-    const [errors, setErrors] = useState('');
+const SignUpPage = () => {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isEmailSignIn, setIsEmailSignIn] = useState(false);
+  const [showTip, setShowTip] = useState(false);
+  const [bubbles, setBubbles] = useState([]);
+  const [error, setError] = useState('');
 
-    const handleSignIn = async (event) => {
+  const handleSignUp = async (event) => {
       event.preventDefault();
-      if (!email || !password) {
-        setErrors('Please enter both email and password.');
+      if (password.length <= 5) {
+        setError('Password must be at least 6 characters long.');
         return;
       }
+    
       try {
-        await signInWithEmailAndPassword(auth, email, password);
-        router.push('/landing');
+          await createUserWithEmailAndPassword(auth, email, password);
+          router.push('/landing'); 
       } catch (error) {
-        console.error('Error signing in:', error);
         let errorMessage = 'An error occurred. Please try again.';
         switch (error.code) {
           case 'auth/invalid-email':
             errorMessage = 'Invalid email address.';
             break;
-          case 'auth/wrong-password':
-            errorMessage = 'Incorrect password.';
+          case 'auth/weak-password':
+            errorMessage = 'Password is too weak. Please choose a stronger password.';
             break;
-          case 'auth/user-not-found':
-            errorMessage = 'No user found with this email.';
+          case 'auth/email-already-in-use':
+            errorMessage = 'An account already exists with this email address.';
             break;
           default:
-            errorMessage = 'Failed to sign in. Please check your credentials and try again.';
+            errorMessage = 'Failed to sign up. Please check your details and try again.';
         }
-        setErrors(errorMessage);
+        setError(errorMessage);
       }
     };
+
+    const handleSignIn = async (event) => {
+      router.push('/signin')
+    }
 
     useEffect(() => {
       createBubbles();
@@ -106,21 +110,6 @@ const SigninPage = () => {
         console.error('Error signing in with Google:', error);
       }
     };
-
-    const handleEmailSignIn = async (event) => {
-      event.preventDefault();
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        console.log('User signed in with Email/Password:', userCredential.user);
-        router.push('/landing');
-      } catch (error) {
-        console.error('Error signing in with Email/Password:', error);
-      }
-    };
-
-    const handleSignOut = async (event) => {
-      router.push('/signup')
-    }
 
     return (
       <ThemeProvider theme={theme}>
@@ -155,7 +144,7 @@ const SigninPage = () => {
           ))}
           <Container maxWidth="sm">
             <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
-            <Stack direction="row" spacing={2} alignItems="center" width="auto" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb:2, ml:4 }} >
+              <Stack direction="row" spacing={2} alignItems="center" width="auto" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb:2, ml:4 }} >
                 <img 
                   src="/logo.png"
                   alt="Edom Belayneh"
@@ -167,9 +156,10 @@ const SigninPage = () => {
                   }} 
                   />
                   <Typography variant="h4" component="h1" align="center" color="primary" gutterBottom>
-                    ProffyAI, Welcome Back!
+                    ProffyAI Sign Up
                   </Typography>
               </Stack>
+              
               {!isEmailSignIn ? (
                 <Button 
                   variant="contained" 
@@ -178,10 +168,12 @@ const SigninPage = () => {
                   onClick={handleGoogleSignIn}
                   sx={{ mb: 2 }}
                 >
-                  Sign in with Google
+                  Sign In with Google
                 </Button>
               ) : (
-                <Box component="form" onSubmit={handleEmailSignIn} noValidate sx={{ mt: 1 }}>
+                <Box component="form" onSubmit={handleSignUp} noValidate sx={{ mt: 1 }}>
+                  
+                
                   <TextField
                     margin="normal"
                     required
@@ -192,7 +184,10 @@ const SigninPage = () => {
                     autoComplete="email"
                     autoFocus
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setError('');
+                    }}
                   />
                   <TextField
                     margin="normal"
@@ -202,36 +197,34 @@ const SigninPage = () => {
                     label="Password"
                     type="password"
                     id="password"
-                    autoComplete="current-password"
+                    autoComplete="new-password"
+                    variant="outlined"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setError('');
+                    }}
                   />
+                  {error && <Typography color="error">{error}</Typography>}
                   <Button
-                    onClick={handleSignIn}
+                    onClick={handleSignUp}
                     type="button"
                     fullWidth
                     variant="contained"
                     color="secondary"
                     sx={{ mt: 3, mb: 2 }}
                   >
-                    Sign In
+                    Sign Up
                   </Button>
-                  {errors && (
-                    <Typography color="error" align="center" sx={{ mt: 2 }}>
-                      {errors}
-                    </Typography>
-                  )}
-                   
                 </Box>
               )}
               <Button
                 fullWidth
                 variant="contained"
-                color="secondary"
                 sx={{ bgcolor: 'accent.main', '&:hover': { bgcolor: 'accent.dark' } }}
                 onClick={() => setIsEmailSignIn(!isEmailSignIn)}
               >
-                {isEmailSignIn ? 'Sign in with Google' : 'Sign in with Email/Password'}
+                {isEmailSignIn ? 'Sign in with Google' : 'Sign up with Email/Password'}
               </Button>
               <Box sx={{ mt: 2, textAlign: 'center' }}>
                 <Button
@@ -242,7 +235,7 @@ const SigninPage = () => {
                   Need Help?
                 </Button>
                 {showTip && (
-                  <Paper sx={{ p: 1, mt: 1, bgcolor: 'accent.main' }}>
+                  <Paper sx={{ p: 1, mt: 1 }}>
                     <Typography variant="body2" color="white">
                       Tip: Make sure to use a strong, unique password!
                     </Typography>
@@ -250,12 +243,12 @@ const SigninPage = () => {
                 )}
               </Box>
               <Button
-                fullWidth
-                variant="text"
-                onClick={handleSignOut}
-                >
-                Don&apos;t have an accout yet? Sign Up
-              </Button> 
+                    fullWidth
+                    variant="text"
+                    onClick={handleSignIn}
+                    >
+                    Already have an account? Sign In
+                  </Button> 
             </Paper>
           </Container>
           <Box sx={{ mt: 2, color: 'white', textAlign: 'center', zIndex: 10 }}>
@@ -268,4 +261,4 @@ const SigninPage = () => {
     );
 }
 
-export default SigninPage;
+export default SignUpPage;
